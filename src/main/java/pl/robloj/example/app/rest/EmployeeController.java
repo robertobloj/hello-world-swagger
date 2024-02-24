@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import jakarta.validation.Valid;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -58,7 +59,7 @@ class EmployeeController {
 
     @PostMapping(path = "/employees", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    ResponseEntity<EntityModel<Employee>> newEmployee(@RequestBody Employee employee) {
+    ResponseEntity<EntityModel<Employee>> newEmployee(@Valid @RequestBody Employee employee) {
 
         try {
             Employee savedEmployee = repository.save(employee);

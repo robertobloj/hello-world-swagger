@@ -41,4 +41,4 @@ Alternatively you can download `yaml` file from [here].
 [GUI]: http://localhost:8080/swagger-ui/index.html
 [OpenAPI description]: http://localhost:8080/v3/api-docs
 [here]: http://localhost:8080/v3/api-docs.yaml
-[SpringDoc OpenAPI]: https://springdoc.org/#features
+[SpringDoc OpenAPI]: https://springdoc.org/

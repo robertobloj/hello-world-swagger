@@ -1,14 +1,16 @@
 package pl.robloj.example.app.dto;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
+import jakarta.validation.constraints.*;
 import lombok.*;
+
+import java.util.List;
 
 @Data
 @Entity
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
+@Builder
 public class Employee {
 
     @Id
@@ -17,17 +19,27 @@ public class Employee {
     @GeneratedValue
     private Long id;
 
+    @NotBlank(message = "First name is a mandatory field")
+    @Size(min = 3, max = 32, message = "First name must have at least 3 chars and maximum 32 chars")
     private String firstName;
 
+    @NotBlank(message = "Last name is a mandatory field")
+    @Size(min = 2, max = 64, message = "Last name must have at least 2 chars and maximum 64 chars")
     private String lastName;
 
-    private String role;
+    @NotBlank(message = "Email cannot be empty")
+    @Email(message = "Email must be valid")
+    private String email;
 
-    public Employee(String firstName, String lastName, String role) {
+    @NotNull(message = "age of employee is mandatory")
+    @Min(value = 18, message = "only adults can work")
+    @Max(value = 65, message = "pensioners cannot work")
+    private Integer age;
 
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.role = role;
-    }
+    @Enumerated(EnumType.STRING)
+    private EmployeeRole role;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Salary> salaries;
 
 }
