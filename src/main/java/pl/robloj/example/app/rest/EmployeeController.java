@@ -1,16 +1,11 @@
 package pl.robloj.example.app.rest;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import io.swagger.v3.oas.annotations.extensions.Extension;
-import io.swagger.v3.oas.annotations.extensions.ExtensionProperty;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -18,15 +13,16 @@ import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.robloj.example.app.dto.Employee;
 import pl.robloj.example.app.repository.EmployeeRepository;
+import io.swagger.v3.oas.annotations.media.Content;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -40,13 +36,12 @@ class EmployeeController {
         this.repository = repository;
     }
 
-    /**
-     * Look up all employees, and transform them into a REST collection resource. Then return them through Spring Web's
-     * {@link ResponseEntity} fluent API.
-     */
     @GetMapping(path = "/employees", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK"),
+    @Operation(
+        summary = "Find all employees",
+        description = "Method allows to find ALL employees, notice that there is no pagination",
+        responses = {
+            @ApiResponse(responseCode = "200",description = "Employee with specified id found")
         })
     ResponseEntity<CollectionModel<EntityModel<Employee>>> findAll() {
 
@@ -64,10 +59,50 @@ class EmployeeController {
             );
     }
 
-    @PostMapping(path = "/employees", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    ResponseEntity<EntityModel<Employee>> newEmployee(@Valid @RequestBody Employee employee) {
+    @GetMapping(path = "/employees/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Find employee by id", description = "Method allows to find existing employee",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Employee with specified id found",
+                content = { @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = Employee.class)
+                )}
+            ),
+            @ApiResponse(
+                responseCode = "404",
+                description = "Employee with specified id NOT found",
+                content = @Content
+            )
+        })
+    ResponseEntity<EntityModel<Employee>> findOne(@PathVariable long id) {
+        return repository.findById(id)
+                .map(employee -> EntityModel.of(employee,
+                        linkTo(methodOn(EmployeeController.class).findOne(employee.getId())).withSelfRel(),
+                        linkTo(methodOn(EmployeeController.class).findAll()).withRel("employees")))
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 
+    @PostMapping(path = "/employees", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Create new employee", description = "Method allows to create new employee",
+        responses = {
+            @ApiResponse(
+                responseCode = "201",
+                description = "Employee created",
+                content = { @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = Employee.class)
+                )}
+            ),
+            @ApiResponse(
+                responseCode = "400",
+                description = "Bad request, check details what went wrong",
+                content=@Content
+            )
+        })
+    ResponseEntity<EntityModel<Employee>> createEmployee(@Valid @RequestBody Employee employee) {
         try {
             Employee savedEmployee = repository.save(employee);
             EntityModel<Employee> employeeResource = EntityModel.of(
@@ -83,39 +118,18 @@ class EmployeeController {
         }
     }
 
-    /**
-     * Look up a single {@link Employee} and transform it into a REST resource. Then return it through Spring Web's
-     * {@link ResponseEntity} fluent API.
-     *
-     * @param id identifier
-     */
-    @GetMapping(path = "/employees/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<EntityModel<Employee>> findOne(@PathVariable long id) {
-
-        return repository.findById(id)
-                .map(employee -> EntityModel.of(employee,
-                        linkTo(methodOn(EmployeeController.class).findOne(employee.getId())).withSelfRel(),
-                        linkTo(methodOn(EmployeeController.class).findAll()).withRel("employees")))
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    /**
-     * Update existing employee then return a Location header.
-     *
-     * @param employee employee
-     * @param id identifier
-     * @return none
-     */
     @PutMapping(path = "/employees/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    ResponseEntity<Void> updateEmployee(@RequestBody Employee employee, @PathVariable long id) throws URISyntaxException {
+    @Operation(summary = "Update the employee", description = "Method allows to update existing employee",
+        responses = {
+            @ApiResponse(responseCode = "204", description = "Employee updated", content=@Content)
+        })
+    ResponseEntity<Void> updateEmployee(@Valid @RequestBody Employee employee, @NotNull @PathVariable long id)
+            throws URISyntaxException {
 
         employee.setId(id);
         repository.save(employee);
 
         Link newlyCreatedLink = linkTo(methodOn(EmployeeController.class).findOne(id)).withSelfRel();
         return ResponseEntity.noContent().location(new URI(newlyCreatedLink.getHref())).build();
-
     }
 }
