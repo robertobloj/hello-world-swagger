@@ -16,6 +16,7 @@ public class DatabaseLoader {
                     .firstName("John")
                     .lastName("Smith")
                     .email("john@gmail.com")
+                    .pesel("82090672857")
                     .age(60)
                     .role(EmployeeRole.CEO).build()
                 );
@@ -23,13 +24,15 @@ public class DatabaseLoader {
                     .firstName("Kate")
                     .lastName("Bush")
                     .email("kate@yahoo.com")
-                    .age(35)
+                    .pesel("87110791842")
+                    .age(36)
                     .role(EmployeeRole.DIRECTOR).build()
                 );
             repository.save(Employee.builder()
                     .firstName("Olivier")
                     .lastName("Great")
                     .email("olivier@outlook.com")
+                    .pesel("91050225183")
                     .age(45)
                     .role(EmployeeRole.MANAGER).build()
                 );
@@ -37,14 +40,16 @@ public class DatabaseLoader {
                     .firstName("Huston")
                     .lastName("Problem")
                     .email("huston@proton.com")
-                    .age(24)
+                    .pesel("93030495432")
+                    .age(21)
                     .role(EmployeeRole.DEVELOPER).build()
                 );
             repository.save(Employee.builder()
                     .firstName("Jack")
                     .lastName("Oregano")
                     .email("jack@oregano.eu")
-                    .age(20)
+                    .pesel("89110288975")
+                    .age(25)
                     .role(EmployeeRole.TESTER).build()
                 );
         };

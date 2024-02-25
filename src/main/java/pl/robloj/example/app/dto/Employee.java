@@ -1,8 +1,10 @@
 package pl.robloj.example.app.dto;
-import jakarta.persistence.*;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.hibernate.validator.constraints.URL;
+import org.hibernate.validator.constraints.pl.PESEL;
 
 import java.util.List;
 
@@ -36,8 +38,14 @@ public class Employee {
     @Max(value = 65, message = "pensioners cannot work")
     private Integer age;
 
+    @PESEL(message="Unique id for polish citizen is invalid")
+    private String pesel;
+
     @Enumerated(EnumType.STRING)
     private EmployeeRole role;
+
+    @URL(protocol = "https")
+    private String linkedInProfile;
 
     @OneToMany(fetch = FetchType.LAZY)
     private List<Salary> salaries;

@@ -1,5 +1,6 @@
 plugins {
 	java
+	idea
 	id("org.springframework.boot") version "3.2.3"
 	id("io.spring.dependency-management") version "1.1.4"
 	id("org.springdoc.openapi-gradle-plugin") version "1.8.0"
@@ -46,4 +47,11 @@ dependencies {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+idea {
+	module {
+		isDownloadJavadoc = true
+		isDownloadSources = true
+	}
 }
