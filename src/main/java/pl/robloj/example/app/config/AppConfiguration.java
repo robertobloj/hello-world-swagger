@@ -1,5 +1,6 @@
 package pl.robloj.example.app.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -23,5 +24,10 @@ public class AppConfiguration {
                                         .url("https://www.apache.org/licenses/LICENSE-2.0.txt")
                         )
                 );
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
     }
 }

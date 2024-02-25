@@ -35,8 +35,8 @@ public class OpenApiValidatorExtensionResolver extends ModelResolver {
             PESEL.class.getPackage()        //extra hibernate validations for Poland
         };
 
-    public OpenApiValidatorExtensionResolver() {
-        super(new ObjectMapper());
+    public OpenApiValidatorExtensionResolver(ObjectMapper objectMapper) {
+        super(objectMapper);
     }
 
     @Override

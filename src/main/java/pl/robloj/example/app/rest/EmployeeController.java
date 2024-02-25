@@ -40,7 +40,14 @@ class EmployeeController {
         this.repository = repository;
     }
 
+    /**
+     * Look up all employees, and transform them into a REST collection resource. Then return them through Spring Web's
+     * {@link ResponseEntity} fluent API.
+     */
     @GetMapping(path = "/employees", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+        })
     ResponseEntity<CollectionModel<EntityModel<Employee>>> findAll() {
 
         List<EntityModel<Employee>> employees = StreamSupport.stream(repository.findAll().spliterator(), false)
@@ -76,6 +83,12 @@ class EmployeeController {
         }
     }
 
+    /**
+     * Look up a single {@link Employee} and transform it into a REST resource. Then return it through Spring Web's
+     * {@link ResponseEntity} fluent API.
+     *
+     * @param id identifier
+     */
     @GetMapping(path = "/employees/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<EntityModel<Employee>> findOne(@PathVariable long id) {
 
@@ -87,6 +100,13 @@ class EmployeeController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /**
+     * Update existing employee then return a Location header.
+     *
+     * @param employee employee
+     * @param id identifier
+     * @return none
+     */
     @PutMapping(path = "/employees/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     ResponseEntity<Void> updateEmployee(@RequestBody Employee employee, @PathVariable long id) throws URISyntaxException {
