@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface SalaryRepository extends CrudRepository<Salary, Long> {
 
-    @Query(value = "SELECT * FROM salaries where employee_id = ?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM salary where employee_id = ?1", nativeQuery = true)
     List<Salary> findByEmployeeId(Long employeeId);
 
 }

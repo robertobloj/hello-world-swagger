@@ -4,26 +4,19 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.IanaLinkRelations;
-import org.springframework.hateoas.Link;
+import lombok.val;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.robloj.example.app.dto.Employee;
 import pl.robloj.example.app.repository.EmployeeRepository;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 class EmployeeController {
@@ -34,100 +27,93 @@ class EmployeeController {
         this.repository = repository;
     }
 
-    @GetMapping(path = "/employees", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/employees/", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
-        summary = "Find all employees",
-        description = "Method allows to find ALL employees, notice that there is no pagination",
-        responses = {
-            @ApiResponse(responseCode = "200",description = "Employee with specified id found")
-        })
-    ResponseEntity<CollectionModel<EntityModel<Employee>>> findAll() {
-
-        List<EntityModel<Employee>> employees = StreamSupport.stream(repository.findAll().spliterator(), false)
-                .map(employee -> EntityModel.of(employee,
-                        linkTo(methodOn(EmployeeController.class).findOne(employee.getId())).withSelfRel(),
-                        linkTo(methodOn(EmployeeController.class).findAll()).withRel("employees")))
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(
-                CollectionModel.of(
-                        employees,
-                        linkTo(methodOn(EmployeeController.class).findAll()).withSelfRel()
-                    )
-            );
+        operationId = "GET_employees",
+        summary = "Find all employees (without HATEOAS)",
+        description = "Method allows to find ALL employees, notice that there is no pagination"
+        )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200",description = "Employee with specified id found")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<List<Employee>> findAll() {
+        List<Employee> target = new ArrayList<>();
+        Iterable<Employee> result = repository.findAll();
+        result.forEach(target::add);
+        return ResponseEntity.ok(target);
     }
 
     @GetMapping(path = "/employees/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Find employee by id", description = "Method allows to find existing employee",
-        responses = {
+    @Operation(
+        operationId = "GET_employee_by_id",
+        summary = "Find employee by id without HATEOAS", description = "Method allows to find existing employee"
+        )
+    @ApiResponses({
             @ApiResponse(
-                responseCode = "200",
-                description = "Employee with specified id found",
-                content = { @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = Employee.class)
-                )}
+                    responseCode = "200",
+                    description = "Employee with specified id found",
+                    content = { @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = Employee.class)
+                    )}
             ),
             @ApiResponse(
-                responseCode = "404",
-                description = "Employee with specified id NOT found",
-                content = @Content
+                    responseCode = "404",
+                    description = "Employee with specified id NOT found",
+                    content = @Content
             )
-        })
-    ResponseEntity<EntityModel<Employee>> findOne(@PathVariable long id) {
-        return repository.findById(id)
-                .map(employee -> EntityModel.of(employee,
-                        linkTo(methodOn(EmployeeController.class).findOne(employee.getId())).withSelfRel(),
-                        linkTo(methodOn(EmployeeController.class).findAll()).withRel("employees")))
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<Employee> findOne(@PathVariable long id) {
+        val entity = repository.findById(id);
+        return ResponseEntity.of(entity);
     }
 
-    @PostMapping(path = "/employees", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Create new employee", description = "Method allows to create new employee",
-        responses = {
+    @PostMapping(path = "/employees/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(
+        operationId = "POST_new_employee",
+        summary = "Create new employee without HATEOAS", description = "Method allows to create new employee"
+        )
+    @ApiResponses({
             @ApiResponse(
-                responseCode = "201",
-                description = "Employee created",
-                content = { @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = Employee.class)
-                )}
+                    responseCode = "201",
+                    description = "Employee created",
+                    content = { @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = Employee.class)
+                    )}
             ),
             @ApiResponse(
-                responseCode = "400",
-                description = "Bad request, check details what went wrong",
-                content=@Content
+                    responseCode = "400",
+                    description = "Bad request, check details what went wrong",
+                    content=@Content
             )
-        })
-    ResponseEntity<EntityModel<Employee>> createEmployee(@Valid @RequestBody Employee employee) {
+    })
+    @ResponseStatus(HttpStatus.CREATED)
+    ResponseEntity<Employee> createEmployee(@Valid @RequestBody Employee employee) {
         try {
             Employee savedEmployee = repository.save(employee);
-            EntityModel<Employee> employeeResource = EntityModel.of(
-                    savedEmployee,
-                    linkTo(methodOn(EmployeeController.class).findOne(savedEmployee.getId())).withSelfRel()
-                );
-            return ResponseEntity
-                    .created(new URI(employeeResource.getRequiredLink(IanaLinkRelations.SELF).getHref()))
-                    .body(employeeResource);
+            return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
         }
-        catch (URISyntaxException e) {
+        catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
         }
     }
 
     @PutMapping(path = "/employees/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Update the employee", description = "Method allows to update existing employee",
-        responses = {
-            @ApiResponse(responseCode = "204", description = "Employee updated", content=@Content)
-        })
-    ResponseEntity<Void> updateEmployee(@Valid @RequestBody Employee employee, @NotNull @PathVariable long id)
-            throws URISyntaxException {
-
+    @Operation(
+        operationId = "PUT_employee_update",
+        summary = "Update the employee without HATEOAS",
+        description = "Method allows to update existing employee"
+        )
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Employee updated", content=@Content)
+    })
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    ResponseEntity<Void> updateEmployee(@Valid @RequestBody Employee employee, @NotNull @PathVariable long id) {
         employee.setId(id);
         repository.save(employee);
-
-        Link newlyCreatedLink = linkTo(methodOn(EmployeeController.class).findOne(id)).withSelfRel();
-        return ResponseEntity.noContent().location(new URI(newlyCreatedLink.getHref())).build();
+        return ResponseEntity.noContent().build();
     }
 }
