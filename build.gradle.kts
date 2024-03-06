@@ -42,7 +42,10 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$versionSpringDocOpenAPI")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:$versionSpringDocOpenAPI")
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.projectlombok:lombok:$versionLombok")
+	testAnnotationProcessor("org.projectlombok:lombok:$versionLombok")
 }
 
 tasks.withType<Test> {
