@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.validator.constraints.URL;
 import org.hibernate.validator.constraints.pl.PESEL;
+import pl.robloj.example.app.dto.validators.IBAN;
 
 import java.util.List;
 
@@ -46,6 +47,9 @@ public class Employee {
 
     @URL(protocol = "https")
     private String linkedInProfile;
+
+    @IBAN(message = "Employee must provide valid account number to receive salary")
+    private String accountNumber;
 
     @OneToMany(fetch = FetchType.LAZY)
     private List<Salary> salaries;

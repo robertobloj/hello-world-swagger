@@ -7,6 +7,7 @@ import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.URL;
 import org.hibernate.validator.constraints.pl.PESEL;
 import org.springframework.stereotype.Component;
+import pl.robloj.example.app.dto.validators.IBAN;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
@@ -16,6 +17,11 @@ import java.util.Map;
 @SuppressWarnings("unused")
 @Component
 public class OpenApiValidatorExtensionResolver extends ModelResolver {
+
+    private final List<Class<? extends Annotation>> extendedInfo = Arrays.asList(
+            Email.class, URL.class, PESEL.class, PastOrPresent.class, Past.class,
+            FutureOrPresent.class, Future.class, IBAN.class
+        );
 
     private final Class<?>[] handledValidations = {
             NotBlank.class,
@@ -30,9 +36,10 @@ public class OpenApiValidatorExtensionResolver extends ModelResolver {
         };
 
     private final Package[] allowedPackages = {
-            NotNull.class.getPackage(),     //package contains all jakarta validations
-            URL.class.getPackage(),         //extra hibernate validations
-            PESEL.class.getPackage()        //extra hibernate validations for Poland
+            NotNull.class.getPackage(),     // package contains all jakarta validations
+            URL.class.getPackage(),         // extra hibernate validations
+            PESEL.class.getPackage(),       // extra hibernate validations for Poland
+            IBAN.class.getPackage()         // custom validations for project
         };
 
     public OpenApiValidatorExtensionResolver(ObjectMapper objectMapper) {
@@ -81,11 +88,6 @@ public class OpenApiValidatorExtensionResolver extends ModelResolver {
     }
 
     private Object describeAnnotation(Annotation annotation, Class<? extends Annotation> annotationType) {
-        List<Class<? extends Annotation>> extendedInfo = Arrays.asList(
-                Email.class, URL.class, PESEL.class, PastOrPresent.class, Past.class,
-                FutureOrPresent.class, Future.class
-            );
-
         if (extendedInfo.contains(annotationType)) {
             return new ExtensionValidationInfo(
                     annotationType,

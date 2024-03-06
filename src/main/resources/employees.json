@@ -6,6 +6,7 @@
     "email": "john@gmail.com",
     "pesel": "82090672857",
     "age": 60,
+    "accountNumber": "38105012301000009316735621",
     "role": "CEO"
   }, {
     "firstName": "Kate",
@@ -13,6 +14,7 @@
     "email": "kate@yahoo.com",
     "pesel": "87110791842",
     "age": 36,
+    "accountNumber": "39105079391157254015019137",
     "role": "DIRECTOR"
   }, {
     "firstName": "Olivier",
@@ -20,6 +22,7 @@
     "email": "olivier@outlook.com",
     "pesel": "91050225183",
     "age": 45,
+    "accountNumber": "50105015883752281201042562",
     "role": "MANAGER"
   }, {
     "firstName": "Huston",
@@ -27,6 +30,7 @@
     "email": "huston@proton.com",
     "pesel": "93030495432",
     "age": 21,
+    "accountNumber": "61105091068021899018734215",
     "role": "DEVELOPER"
   }, {
     "firstName": "Jack",
@@ -34,6 +38,7 @@
     "email": "jack@oregano.eu",
     "pesel": "89110288975",
     "age": 25,
+    "accountNumber": "23105082712365276824111402",
     "role": "TESTER"
   }
 ]
