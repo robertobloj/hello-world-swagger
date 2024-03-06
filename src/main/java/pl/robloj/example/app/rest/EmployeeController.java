@@ -50,19 +50,19 @@ class EmployeeController {
         summary = "Find employee by id without HATEOAS", description = "Method allows to find existing employee"
         )
     @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Employee with specified id found",
-                    content = { @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = Employee.class)
-                    )}
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Employee with specified id NOT found",
-                    content = @Content
-            )
+        @ApiResponse(
+            responseCode = "200",
+            description = "Employee with specified id found",
+            content = { @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = Employee.class)
+            )}
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Employee with specified id NOT found",
+            content = @Content
+        )
     })
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<Employee> findOne(@PathVariable long id) {
@@ -76,19 +76,19 @@ class EmployeeController {
         summary = "Create new employee without HATEOAS", description = "Method allows to create new employee"
         )
     @ApiResponses({
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "Employee created",
-                    content = { @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = Employee.class)
-                    )}
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Bad request, check details what went wrong",
-                    content=@Content
-            )
+        @ApiResponse(
+            responseCode = "201",
+            description = "Employee created",
+            content = { @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = Employee.class)
+            )}
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad request, check details what went wrong",
+            content=@Content
+        )
     })
     @ResponseStatus(HttpStatus.CREATED)
     ResponseEntity<Employee> createEmployee(@Valid @RequestBody Employee employee) {
@@ -106,7 +106,7 @@ class EmployeeController {
         operationId = "PUT_employee_update",
         summary = "Update the employee without HATEOAS",
         description = "Method allows to update existing employee"
-        )
+    )
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Employee updated", content=@Content)
     })

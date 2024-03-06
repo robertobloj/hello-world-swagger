@@ -45,21 +45,21 @@ public class SalaryController {
         operationId = "POST_new_salary",
         summary = "Create new salary entity without HATEOAS response",
         description = "Method allows to create new salary"
-        )
+    )
     @ApiResponses({
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "Salary created",
-                    content = { @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = Salary.class)
-                    )}
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Bad request, check details what went wrong",
-                    content=@Content
-            )
+        @ApiResponse(
+            responseCode = "201",
+            description = "Salary created",
+            content = { @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = Salary.class)
+            )}
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad request, check details what went wrong",
+            content=@Content
+        )
     })
     @ResponseStatus(HttpStatus.CREATED)
     ResponseEntity<Salary> createSalary(@Valid @RequestBody Salary salary) {
