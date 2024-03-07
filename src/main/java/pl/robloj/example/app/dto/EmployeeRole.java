@@ -6,6 +6,7 @@ public enum EmployeeRole {
     CEO,
     DIRECTOR,
     MANAGER,
+    HR,
     RISK_OFFICER,
     DEVELOPER,
     DEVOPS,
