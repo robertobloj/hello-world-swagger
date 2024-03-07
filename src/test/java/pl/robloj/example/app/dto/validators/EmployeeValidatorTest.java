@@ -19,6 +19,7 @@ public class EmployeeValidatorTest {
                 .pesel("83092629182")
                 .firstName("Robert")
                 .lastName("Smith")
+                .accountNumber("38105012301000009316735621")
                 .linkedInProfile("https://linkedin.com/profiles/rsmith")
                 .role(EmployeeRole.COMPLIANCE)
                 .build();
@@ -40,6 +41,7 @@ public class EmployeeValidatorTest {
                 .pesel("83092629182")
                 .firstName("Robert")
                 .lastName("Smith")
+                .accountNumber("91109024023639359633743839")
                 .linkedInProfile("https://linkedin.com/profiles/rsmith")
                 .role(EmployeeRole.COMPLIANCE)
                 .build();
@@ -53,5 +55,4 @@ public class EmployeeValidatorTest {
             assertEquals(constraint.get().getInvalidValue(), invalidEmail);
         }
     }
-
 }

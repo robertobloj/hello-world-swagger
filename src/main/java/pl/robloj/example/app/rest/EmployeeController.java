@@ -34,7 +34,9 @@ class EmployeeController {
         description = "Method allows to find ALL employees, notice that there is no pagination"
         )
     @ApiResponses({
-        @ApiResponse(responseCode = "200",description = "Employee with specified id found")
+        @ApiResponse(responseCode = "200", description = "Employee with specified id found"),
+        @ApiResponse(responseCode = "401", description = "User specified invalid \"Basic user:password\" header"),
+        @ApiResponse(responseCode = "403", description = "User has no access to this endpoint")
     })
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<List<Employee>> findAll() {
@@ -48,7 +50,7 @@ class EmployeeController {
     @Operation(
         operationId = "GET_employee_by_id",
         summary = "Find employee by id without HATEOAS", description = "Method allows to find existing employee"
-        )
+    )
     @ApiResponses({
         @ApiResponse(
             responseCode = "200",
@@ -57,6 +59,16 @@ class EmployeeController {
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
                 schema = @Schema(implementation = Employee.class)
             )}
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "User specified invalid \"Basic user:password\" header",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "User has no access to this endpoint",
+            content = @Content
         ),
         @ApiResponse(
             responseCode = "404",
@@ -74,7 +86,7 @@ class EmployeeController {
     @Operation(
         operationId = "POST_new_employee",
         summary = "Create new employee without HATEOAS", description = "Method allows to create new employee"
-        )
+    )
     @ApiResponses({
         @ApiResponse(
             responseCode = "201",
@@ -88,6 +100,16 @@ class EmployeeController {
             responseCode = "400",
             description = "Bad request, check details what went wrong",
             content=@Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "User specified invalid \"Basic user:password\" header",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "User has no access to this endpoint",
+            content = @Content
         )
     })
     @ResponseStatus(HttpStatus.CREATED)
@@ -108,7 +130,21 @@ class EmployeeController {
         description = "Method allows to update existing employee"
     )
     @ApiResponses({
-        @ApiResponse(responseCode = "204", description = "Employee updated", content=@Content)
+        @ApiResponse(
+            responseCode = "204",
+            description = "Employee updated",
+            content=@Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "User specified invalid \"Basic user:password\" header",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "User has no access to this endpoint",
+            content = @Content
+        )
     })
     @ResponseStatus(HttpStatus.NO_CONTENT)
     ResponseEntity<Void> updateEmployee(@Valid @RequestBody Employee employee, @NotNull @PathVariable long id) {

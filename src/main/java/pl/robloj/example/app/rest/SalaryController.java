@@ -30,9 +30,19 @@ public class SalaryController {
         operationId = "GET_salaries_by_employee_id",
         summary = "Find all salaries related to employee without HATEOAS",
         description = "Method allows to find ALL salaries, notice that there is no pagination"
-        )
+    )
     @ApiResponses({
-        @ApiResponse(responseCode = "200",description = "Salaries with specified employee id found")
+        @ApiResponse(responseCode = "200",description = "Salaries with specified employee id found"),
+        @ApiResponse(
+            responseCode = "401",
+            description = "User specified invalid \"Basic user:password\" header",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "User has no access to this endpoint",
+            content = @Content
+        )
     })
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<List<Salary>> findSalariesForEmployee(@PathVariable long employeeId) {
@@ -59,6 +69,16 @@ public class SalaryController {
             responseCode = "400",
             description = "Bad request, check details what went wrong",
             content=@Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "User specified invalid \"Basic user:password\" header",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "403",
+            description = "User has no access to this endpoint",
+            content = @Content
         )
     })
     @ResponseStatus(HttpStatus.CREATED)
