@@ -28,7 +28,6 @@ public class Salary {
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
-//    @PastOrPresent(message = "salary timestamp can't be in the future")
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date salaryTimestamp;

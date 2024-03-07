@@ -45,7 +45,7 @@ public class SecurityConfiguration {
     private static final String AUTHORITY_EMPLOYEE_READER = "EMPLOYEE_READER";
     private static final String AUTHORITY_EMPLOYEE_WRITER = "EMPLOYEE_WRITER";
     private static final String AUTHORITY_SALARY_READER = "EMPLOYEE_READER";
-    private static final String AUTHORITY_SALARY_WRITER = "EMPLOYEE_WRTIER";
+    private static final String AUTHORITY_SALARY_WRITER = "EMPLOYEE_WRITER";
 
     @Autowired
     private ObjectMapper objectMapper;
